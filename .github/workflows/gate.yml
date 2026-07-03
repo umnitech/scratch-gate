@@ -1,28 +1,63 @@
-# T2 placeholder gate — always-green jobs named exactly like the real gate's, so the ruleset's
-# required-check contexts get validated cheaply. T3 replaces this with the real 4 checks.
+# T3: the REAL gate — same four job names the ruleset requires (build / lint / test / gitleaks).
 name: gate
 
 on:
   pull_request:
+
+concurrency:
+  group: gate-${{ github.head_ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
     name: build
     runs-on: ubuntu-latest
     steps:
-      - run: "true"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run typecheck
+      - run: pnpm run build --if-present
+
   lint:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - run: "true"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+
   test:
     name: test
     runs-on: ubuntu-latest
     steps:
-      - run: "true"
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run test
+
   gitleaks:
     name: gitleaks
     runs-on: ubuntu-latest
     steps:
-      - run: "true"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks (pinned CLI)
+        run: |
+          GITLEAKS_VERSION=8.21.2
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar -xz gitleaks
+          ./gitleaks detect --source . --no-banner --redact -v
