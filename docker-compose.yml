@@ -1,0 +1,9 @@
+# Exists solely for spike T5 probe (f): measure docker/compose/Postgres startup + test timings on
+# the cloud VM. The fixture app does not use a database.
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: scratch
+    ports:
+      - "5432:5432"

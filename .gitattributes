@@ -1,0 +1,3 @@
+# Append-only files: union merge — parallel branches both appending never conflict.
+docs/journal.md merge=union
+docs/decisions.md merge=union
