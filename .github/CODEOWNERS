@@ -1,0 +1,3 @@
+# T2: protected paths — owned by pyrdnv (deliberately, to demonstrate the self-approval deadlock in case c)
+/tests/ @pyrdnv
+/auth/  @pyrdnv

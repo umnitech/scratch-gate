@@ -1,0 +1,28 @@
+# T2 placeholder gate — always-green jobs named exactly like the real gate's, so the ruleset's
+# required-check contexts get validated cheaply. T3 replaces this with the real 4 checks.
+name: gate
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: "true"
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - run: "true"
+  test:
+    name: test
+    runs-on: ubuntu-latest
+    steps:
+      - run: "true"
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-latest
+    steps:
+      - run: "true"
