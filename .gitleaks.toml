@@ -1,0 +1,4 @@
+# gitleaks config — default rules; project allowlists get added here when the gate flags
+# false positives (tuned at T3/S8; keep every exception narrow and commented).
+[extend]
+useDefault = true
