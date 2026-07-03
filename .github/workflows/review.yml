@@ -1,0 +1,41 @@
+# Advisory two-axis review — NOT a required check. Never add `review` to the ruleset.
+# ⚠️ PENDING T4 validation: subscription OAuth via `claude setup-token` → repo secret
+#    CLAUDE_CODE_OAUTH_TOKEN. If the token path fails, fall back to ANTHROPIC_API_KEY (metered)
+#    and consider label-triggering instead of every-push to control cost.
+name: review
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+
+jobs:
+  review:
+    name: review (advisory)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # need base branch for BASE...HEAD diff
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Two-axis review
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
+          BASE_REF: ${{ github.base_ref }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          claude -p --allowedTools "Bash(git *),Bash(gh *),Read,Grep,Glob" \
+            "Review the diff 'git diff origin/${BASE_REF}...HEAD' (three-dot, merge-base) for PR #${PR_NUMBER}.
+            Find the originating issue from the branch name / commit messages (gh issue view N --comments).
+            Report along TWO AXES, separately — never merged, never reranked:
+            ## Spec — versus the issue's acceptance criteria: (a) required but missing/partial, (b) present but not asked for (scope creep), (c) implemented but looks wrong. Quote the criterion for each finding.
+            ## Standards — code quality: Critical / Important / Minor. Skip anything tooling already enforces.
+            Rules: the implementer's report is a claim; the diff is the evidence. A stated rationale never downgrades a finding. If no issue is found, say so and review Standards only.
+            End with one line per axis: finding count + worst finding. Under 500 words total." \
+            > review.md
+          gh pr comment "$PR_NUMBER" --body-file review.md
