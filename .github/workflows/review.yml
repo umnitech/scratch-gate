@@ -29,13 +29,13 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          claude -p --allowedTools "Bash(git *),Bash(gh *),Read,Grep,Glob" \
-            "Review the diff 'git diff origin/${BASE_REF}...HEAD' (three-dot, merge-base) for PR #${PR_NUMBER}.
+          claude -p "Review the diff 'git diff origin/${BASE_REF}...HEAD' (three-dot, merge-base) for PR #${PR_NUMBER}.
             Find the originating issue from the branch name / commit messages (gh issue view N --comments).
             Report along TWO AXES, separately — never merged, never reranked:
             ## Spec — versus the issue's acceptance criteria: (a) required but missing/partial, (b) present but not asked for (scope creep), (c) implemented but looks wrong. Quote the criterion for each finding.
             ## Standards — code quality: Critical / Important / Minor. Skip anything tooling already enforces.
             Rules: the implementer's report is a claim; the diff is the evidence. A stated rationale never downgrades a finding. If no issue is found, say so and review Standards only.
             End with one line per axis: finding count + worst finding. Under 500 words total." \
+            --allowedTools "Bash(git *),Bash(gh *),Read,Grep,Glob" \
             > review.md
           gh pr comment "$PR_NUMBER" --body-file review.md
