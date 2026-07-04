@@ -7,3 +7,7 @@
      Parallel branches merge cleanly (union merge, see .gitattributes). -->
 
 ---
+
+## 2026-07-04 · claude/s7-owned-path-probe-m105g7
+S7 owned-path probe: added `tests/cloud-probe.txt` (single line marker) to exercise the CODEOWNERS-protected `/tests/` path via a cloud session. Files touched: `tests/cloud-probe.txt`, `docs/journal.md`. Opened PR "S7 probe: owned path via cloud" (not merged).
+
