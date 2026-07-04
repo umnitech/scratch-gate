@@ -6,4 +6,6 @@ services:
     environment:
       POSTGRES_PASSWORD: scratch
     ports:
-      - "5432:5432"
+      # 5433 on purpose: the VM's preinstalled Postgres owns 5432 once probe (f)
+      # runs `service postgresql start`.
+      - "5433:5432"
