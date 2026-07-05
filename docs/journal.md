@@ -16,3 +16,8 @@ S7 owned-path probe: added `tests/cloud-probe.txt` (single line marker) to exerc
 ## 2026-07-04 · t6-prep
 T6 staging (attended, Petar's Mac): added a **skipped** red test to `src/slugify.test.ts` (diacritics transliteration — the walk-away target unskips and implements it) and remapped `docker-compose.yml` to host port 5433 (probe f's `service postgresql start` owns 5432). Skipped-not-red because the wall itself forbids a red test on main (required `test` check) — the T6 spec's "pre-commit a red test" was written before the gate went live; scenarios.md updated to match. Companion ready-for-agent issue created separately.
 
+
+---
+
+## 2026-07-05 · phone /goal probe
+Phone-initiated `/goal` probe: created `goal-probe-phone.txt` (contents `ENGAGED`) at repo root, committed on branch `claude/phone-goal-probe-dmzmpl` (d925e4d), pushed, and opened PR #20 "phone /goal probe". Files touched: `goal-probe-phone.txt`, `docs/journal.md`. No code/tests affected; probe only.
