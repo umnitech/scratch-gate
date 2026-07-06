@@ -1,8 +1,9 @@
 # Advisory review — NOT a required check. Never add `review` to the ruleset.
 # Auth: subscription OAuth via `claude setup-token` → repo secret CLAUDE_CODE_OAUTH_TOKEN
-# (T4-validated 2026-07-04). Prompt calibrated 2026-07-06: anti-noise rubric (>80% confidence,
-# zero-findings-valid), severity honesty (T7's over-graded test-smell), blind dispatch (never
-# read the implementer's summary), plus a light Security axis (deep pass = security-review.yml).
+# (T4-validated 2026-07-04). One always-on reviewer, no path filters: three axes (spec / standards
+# / security). S8 (2026-07-06) proved a path-filtered security job silently skips ordinary-path
+# authz bugs, while this unfiltered pass caught an IDOR as Critical — simplicity IS the reliability.
+# A deeper on-demand pass is the built-in `/security-review` in an interactive session (no CI).
 name: review
 
 on:
@@ -35,7 +36,7 @@ jobs:
             Report along THREE AXES, separately — never merged, never reranked:
             ## Spec — versus the issue's acceptance criteria: (a) required but missing/partial, (b) present but not asked for (scope creep), (c) implemented but looks wrong. Quote the criterion for each finding.
             ## Standards — code quality: Critical / Important / Minor. Skip anything tooling already enforces. Severity honesty: Critical means provably breaks the spec, a test, or security; a style or test-structure smell is at most Important — when torn between two severities, pick the lower and say why.
-            ## Security — one-line flags only (authz, data exposure, injection, secrets); the deep pass runs elsewhere. Usually empty.
+            ## Security — hunt in priority order: authorization (IDOR, a route/query/mutation reachable without the right ownership or role check — the highest-value miss), then secrets in code, injection, sensitive-data exposure. Read surrounding code where the diff alone can't answer. Write each as 'What could go wrong:' (plain language, for a non-security reader) + 'The fix:'. Usually empty; if something needs a deeper look than a diff review allows, say so and recommend a /security-review.
             Report a finding only at >80% confidence it is real and worth a human's attention. ZERO findings on any axis is a valid, expected outcome — never invent findings to seem thorough.
             If no issue is found, say so and review Standards + Security only.
             End with one line per axis: finding count + worst finding. Under 500 words total." \
